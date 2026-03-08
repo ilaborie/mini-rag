@@ -1,0 +1,11 @@
+name = "crab-island"
+description = "A tropical island theme with Catppuccin Mocha colors for the Crab Island RAG Expedition"
+license = "MIT"
+min_version = "0.19.0"
+
+[extra]
+crab_island_title = "Crab Island"
+crab_island_menu = [
+    {url = "$BASE_URL", name = "Home"},
+    {url = "$BASE_URL/tags", name = "Tags"},
+]

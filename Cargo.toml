@@ -23,9 +23,9 @@ libsql = "0.9.29"
 owo-colors = "4"
 rig-core = "0.32.0"
 serde_json = "1.0.149"
-tokio = { version = "1", features = ["full"] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 tracing = "0.1.44"
-tracing-subscriber = { version = "0.3.22", features = ["env-filter"] }
+tracing-subscriber = "0.3.22"
 
 [lints.rust]
 unsafe_code = "deny"

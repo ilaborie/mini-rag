@@ -3,25 +3,6 @@ use std::path::Path;
 use anyhow::Context;
 use libsql::{Builder, Connection, params};
 
-fn is_valid_identifier(s: &str) -> bool {
-    !s.is_empty() && s.bytes().all(|b| b.is_ascii_alphanumeric() || b == b'_')
-}
-
-async fn has_column(conn: &Connection, table: &str, column: &str) -> anyhow::Result<bool> {
-    assert!(is_valid_identifier(table), "invalid table name: {table}");
-    assert!(is_valid_identifier(column), "invalid column name: {column}");
-    let sql = format!("SELECT COUNT(*) FROM pragma_table_info('{table}') WHERE name = '{column}'");
-    let count: i64 = conn
-        .query(&sql, params![])
-        .await?
-        .next()
-        .await?
-        .map(|row| row.get::<i64>(0))
-        .transpose()?
-        .unwrap_or(0);
-    Ok(count > 0)
-}
-
 pub async fn init_db(path: &Path) -> anyhow::Result<Connection> {
     let db = Builder::new_local(path).build().await?;
     let conn = db.connect()?;
@@ -47,15 +28,6 @@ pub async fn init_db(path: &Path) -> anyhow::Result<Connection> {
             ON chunks(libsql_vector_idx(embedding, 'metric=cosine'));",
     )
     .await?;
-
-    // Migration for pre-existing DBs
-    if !has_column(&conn, "documents", "mtime").await? {
-        conn.execute(
-            "ALTER TABLE documents ADD COLUMN mtime INTEGER NOT NULL DEFAULT 0",
-            params![],
-        )
-        .await?;
-    }
 
     Ok(conn)
 }

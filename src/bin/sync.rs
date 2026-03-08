@@ -4,11 +4,9 @@ use std::path::{Path, PathBuf};
 use std::time::SystemTime;
 
 use anyhow::Context;
-use rig::providers::ollama;
-use tracing_subscriber::EnvFilter;
-
 use mini_rag::chunk;
 use mini_rag::{DB_PATH, db, embed, extract};
+use rig::providers::ollama;
 
 const CHUNK_SIZE: usize = 500;
 const CHUNK_OVERLAP: usize = 50;
@@ -93,42 +91,19 @@ async fn ingest_file(
     let chunks = chunk::chunk_text(&content, CHUNK_SIZE, CHUNK_OVERLAP);
     tracing::info!("Created {} chunks for {}", chunks.len(), path.display());
 
-    // Embed in batches, pipeline DB inserts with next batch's embedding
+    // Embed in batches, insert within a transaction
     let tx = conn.transaction().await?;
-    let mut pending_insert: Option<tokio::task::JoinHandle<anyhow::Result<()>>> = None;
-
-    for (batch_idx, batch) in chunks.chunks(EMBED_BATCH_SIZE).enumerate() {
+    let mut chunk_idx = 0;
+    for batch in chunks.chunks(EMBED_BATCH_SIZE) {
         let texts: Vec<String> = batch.iter().map(|c| c.content.clone()).collect();
         let embeddings = embed::embed_texts(embedding_model, texts).await?;
 
-        // Wait for previous batch's DB insert before starting a new one
-        if let Some(handle) = pending_insert.take() {
-            handle.await??;
+        for (chunk, embedding) in batch.iter().zip(embeddings) {
+            db::insert_chunk(&tx, doc_id, chunk_idx, &chunk.content, &embedding).await?;
+            chunk_idx += 1;
         }
 
-        // Spawn DB inserts for this batch while the next batch embeds
-        let tx_clone = tx.clone();
-        let batch_data: Vec<(usize, String, Vec<f32>)> = batch
-            .iter()
-            .zip(embeddings)
-            .enumerate()
-            .map(|(j, (c, emb))| (batch_idx * EMBED_BATCH_SIZE + j, c.content.clone(), emb))
-            .collect();
-        let total = chunks.len();
-
-        pending_insert = Some(tokio::spawn(async move {
-            for (chunk_idx, content, embedding) in &batch_data {
-                db::insert_chunk(&tx_clone, doc_id, *chunk_idx, content, embedding).await?;
-            }
-            let progress = (batch_idx + 1) * EMBED_BATCH_SIZE;
-            tracing::info!("Embedded {}/{} chunks", progress.min(total), total);
-            Ok(())
-        }));
-    }
-
-    // Wait for final batch insert
-    if let Some(handle) = pending_insert.take() {
-        handle.await??;
+        tracing::info!("Embedded {}/{} chunks", chunk_idx, chunks.len());
     }
     tx.commit().await?;
 
@@ -138,11 +113,7 @@ async fn ingest_file(
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    tracing_subscriber::fmt()
-        .with_env_filter(
-            EnvFilter::from_default_env().add_directive("info".parse().expect("valid directive")),
-        )
-        .init();
+    tracing_subscriber::fmt::init();
 
     let args: Vec<String> = std::env::args().skip(1).collect();
     if args.is_empty() {

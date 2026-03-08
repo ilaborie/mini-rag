@@ -1,0 +1,108 @@
+@use "variables" as v;
+
+html {
+  font-size: 18px;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+body {
+  font-family: v.$body-font;
+  line-height: 1.7;
+  color: var(--text-primary);
+  background: var(--bg);
+  border-top: 4px solid;
+  border-image: linear-gradient(to right, var(--peach), var(--maroon), var(--mauve)) 1;
+  overflow-y: scroll;
+}
+
+.container {
+  max-width: v.$body-width;
+  margin: 0 auto;
+  padding: 0 20px 4rem;
+}
+
+@include v.max-screen() {
+  body {
+    border-top: 0;
+  }
+
+  .container {
+    width: 100%;
+  }
+}
+
+a {
+  color: var(--link);
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--link-hover);
+  }
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+pre {
+  display: block;
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+pre, code {
+  font-size: 90%;
+  font-family: v.$code-font;
+  font-feature-settings: "calt", "liga", "dlig", "ss01", "ss02", "ss03", "ss04", "ss05", "ss06", "ss07", "ss08";
+  margin-bottom: 0;
+}
+
+pre > code {
+  display: block;
+  border: none;
+  font-style: normal;
+  font-size: 0.9rem;
+}
+
+.giallo-l {
+  display: inline-block;
+  min-height: 1lh;
+  width: 100%;
+}
+
+.giallo-ln {
+  display: inline-block;
+  user-select: none;
+  margin-right: 0.4em;
+  padding: 0 0.4em;
+  min-width: 3ch;
+  text-align: right;
+  opacity: 0.5;
+  color: var(--overlay0);
+}
+
+:not(pre) > code {
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--bg-inline-code);
+  color: var(--peach);
+  font-size: 0.85em;
+}
+
+iframe {
+  border: 0;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--mauve) 30%, transparent);
+  color: var(--text);
+}

@@ -2,3 +2,6 @@
 mini_rag.db
 
 *.pdf
+
+# Zola build output
+blog/public/

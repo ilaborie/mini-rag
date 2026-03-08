@@ -1,0 +1,350 @@
+// Catppuccin syntax highlighting for Zola/giallo z-classes
+// Uses CSS custom properties — automatically adapts to light/dark theme
+
+@mixin catppuccin {
+  // Code block base
+  .z-code {
+    color: var(--text);
+    background-color: var(--mantle);
+  }
+
+  .z-hl {
+    background-color: var(--surface0);
+  }
+
+  .giallo-ln {
+    color: var(--overlay0);
+  }
+
+  // Comments
+  .z-comment,
+  .z-punctuation.z-definition.z-comment,
+  .z-string.z-comment {
+    color: var(--overlay0);
+  }
+
+  // Keywords & storage
+  .z-keyword,
+  .z-storage {
+    color: var(--mauve);
+  }
+
+  .z-keyword.z-operator,
+  .z-keyword.z-other.z-template,
+  .z-keyword.z-other.z-substitution {
+    color: var(--sky);
+  }
+
+  .z-storage.z-type {
+    color: var(--mauve);
+  }
+
+  .z-storage.z-modifier.z-package,
+  .z-storage.z-modifier.z-import,
+  .z-storage.z-type.z-java {
+    color: var(--text);
+  }
+
+  // Variables
+  .z-variable {
+    color: var(--text);
+  }
+
+  .z-variable.z-other {
+    color: var(--text);
+  }
+
+  .z-variable.z-language {
+    color: var(--red);
+  }
+
+  .z-variable.z-parameter.z-function {
+    color: var(--text);
+  }
+
+  .z-variable.z-other.z-constant,
+  .z-variable.z-other.z-enummember {
+    color: var(--peach);
+  }
+
+  // Entities (types, functions, tags)
+  .z-entity {
+    color: var(--lavender);
+  }
+
+  .z-entity.z-name {
+    color: var(--blue);
+    font-weight: bold;
+  }
+
+  .z-entity.z-name.z-function,
+  .z-meta.z-function-call,
+  .z-variable.z-function,
+  .z-support.z-function,
+  .z-keyword.z-other.z-special-method,
+  .z-meta.z-block-level,
+  .z-entity.z-name.z-method.z-js,
+  .z-meta.z-class-method.z-js .z-entity.z-name.z-function.z-js,
+  .z-variable.z-function.z-constructor {
+    color: var(--blue);
+  }
+
+  .z-entity.z-name.z-tag {
+    color: var(--green);
+  }
+
+  .z-entity.z-name.z-constant {
+    color: var(--peach);
+  }
+
+  .z-entity.z-name.z-class,
+  .z-entity.z-name.z-type.z-class,
+  .z-support.z-type,
+  .z-support.z-class {
+    color: var(--yellow);
+  }
+
+  .z-entity.z-name.z-module.z-js,
+  .z-variable.z-import.z-parameter.z-js,
+  .z-variable.z-other.z-class.z-js {
+    color: var(--red);
+  }
+
+  .z-entity.z-other.z-attribute-name {
+    color: var(--mauve);
+  }
+
+  // Strings
+  .z-string {
+    color: var(--green);
+  }
+
+  .z-string.z-regexp,
+  .z-string.z-regexp.z-character-class,
+  .z-string.z-regexp.z-arbitrary-repitition,
+  .z-source.z-regexp {
+    color: var(--sky);
+  }
+
+  .z-punctuation.z-definition.z-string {
+    color: var(--green);
+  }
+
+  .z-string.z-other.z-link {
+    color: var(--flamingo);
+    text-decoration: underline;
+  }
+
+  // Constants
+  .z-constant {
+    color: var(--peach);
+  }
+
+  .z-constant.z-numeric,
+  .z-constant.z-language,
+  .z-support.z-constant,
+  .z-constant.z-character,
+  .z-keyword.z-other.z-unit {
+    color: var(--peach);
+  }
+
+  .z-constant.z-character.z-escape {
+    color: var(--green);
+    font-weight: bold;
+  }
+
+  .z-constant.z-other.z-reference.z-link {
+    color: var(--flamingo);
+    text-decoration: underline;
+  }
+
+  // Support
+  .z-support {
+    color: var(--peach);
+  }
+
+  .z-support.z-other.z-variable {
+    color: var(--flamingo);
+  }
+
+  .z-support.z-variable {
+    color: var(--peach);
+  }
+
+  .z-meta.z-module-reference {
+    color: var(--peach);
+  }
+
+  .z-meta.z-property-name {
+    color: var(--blue);
+  }
+
+  // Punctuation
+  .z-punctuation,
+  .z-punctuation.z-definition.z-tag,
+  .z-punctuation.z-definition.z-tag.z-html,
+  .z-punctuation.z-definition.z-tag.z-begin.z-html,
+  .z-punctuation.z-definition.z-tag.z-end.z-html,
+  .z-punctuation.z-section.z-embedded,
+  .z-punctuation.z-separator.z-inheritance.z-php {
+    color: var(--sky);
+  }
+
+  // Markup
+  .z-markup.z-heading {
+    color: var(--blue);
+    font-weight: bold;
+  }
+
+  .z-markup.z-quote {
+    color: var(--green);
+  }
+
+  .z-markup.z-italic {
+    color: var(--text);
+    font-style: italic;
+  }
+
+  .z-markup.z-bold {
+    color: var(--text);
+    font-weight: bold;
+  }
+
+  .z-markup.z-underline {
+    text-decoration: underline;
+  }
+
+  .z-markup.z-strikethrough {
+    text-decoration: line-through;
+  }
+
+  .z-markup.z-inserted {
+    color: var(--green);
+    background-color: color-mix(in srgb, var(--green) 10%, transparent);
+  }
+
+  .z-markup.z-deleted {
+    color: var(--red);
+    background-color: color-mix(in srgb, var(--red) 10%, transparent);
+  }
+
+  .z-markup.z-changed {
+    color: var(--peach);
+    background-color: color-mix(in srgb, var(--peach) 10%, transparent);
+  }
+
+  .z-markup.z-ignored,
+  .z-markup.z-untracked {
+    color: var(--surface0);
+    background-color: var(--blue);
+  }
+
+  .z-markup.z-inline.z-raw {
+    color: var(--blue);
+  }
+
+  // Invalid
+  .z-invalid.z-broken,
+  .z-invalid.z-deprecated,
+  .z-invalid.z-illegal,
+  .z-invalid.z-unimplemented,
+  .z-message.z-error {
+    color: var(--red);
+    font-style: italic;
+  }
+
+  // Diff
+  .z-meta.z-diff.z-range {
+    color: var(--mauve);
+    font-weight: bold;
+  }
+
+  .z-meta.z-diff.z-header {
+    color: var(--blue);
+  }
+
+  .z-meta.z-diff.z-header.z-from-file {
+    color: var(--red);
+    background-color: color-mix(in srgb, var(--red) 10%, transparent);
+  }
+
+  .z-meta.z-diff.z-header.z-to-file {
+    color: var(--green);
+    background-color: color-mix(in srgb, var(--green) 10%, transparent);
+  }
+
+  .z-punctuation.z-definition.z-deleted {
+    color: var(--red);
+    background-color: color-mix(in srgb, var(--red) 10%, transparent);
+  }
+
+  .z-punctuation.z-definition.z-inserted {
+    color: var(--green);
+    background-color: color-mix(in srgb, var(--green) 10%, transparent);
+  }
+
+  .z-punctuation.z-definition.z-changed {
+    color: var(--peach);
+    background-color: color-mix(in srgb, var(--peach) 10%, transparent);
+  }
+
+  // Misc
+  .z-meta.z-tag,
+  .z-meta.z-tag.z-sgml {
+    color: var(--red);
+  }
+
+  .z-meta.z-separator {
+    color: var(--blue);
+    font-weight: bold;
+  }
+
+  .z-meta.z-output {
+    color: var(--blue);
+  }
+
+  .z-source {
+    color: var(--green);
+  }
+
+  .z-source.z-ruby.z-embedded {
+    color: var(--flamingo);
+  }
+
+  .z-source.z-js .z-constant.z-other.z-object.z-key.z-js .z-string.z-unquoted.z-label.z-js {
+    color: var(--red);
+  }
+
+  // Brackets
+  .z-brackethighlighter.z-tag,
+  .z-brackethighlighter.z-curly,
+  .z-brackethighlighter.z-round,
+  .z-brackethighlighter.z-square,
+  .z-brackethighlighter.z-angle,
+  .z-brackethighlighter.z-quote {
+    color: var(--overlay2);
+  }
+
+  .z-brackethighlighter.z-unmatched {
+    color: var(--red);
+  }
+
+  // Decorators
+  .z-tag.z-decorator.z-js .z-entity.z-name.z-tag.z-js,
+  .z-tag.z-decorator.z-js .z-punctuation.z-definition.z-tag.z-js {
+    color: var(--blue);
+  }
+
+  // Markdown
+  .z-punctuation.z-definition.z-list.z-begin.z-markdown {
+    color: var(--peach);
+  }
+
+  // Carriage return (visible whitespace)
+  .z-carriage-return {
+    color: var(--mantle);
+    background-color: var(--mauve);
+    font-style: italic;
+    text-decoration: underline;
+  }
+}
