@@ -12,6 +12,7 @@ use mini_rag::{DB_PATH, db, embed, extract};
 
 const CHUNK_SIZE: usize = 500;
 const CHUNK_OVERLAP: usize = 50;
+const EMBED_BATCH_SIZE: usize = 200;
 
 fn file_mtime(path: &Path) -> anyhow::Result<i64> {
     let metadata = std::fs::metadata(path)?;
@@ -92,13 +93,44 @@ async fn ingest_file(
     let chunks = chunk::chunk_text(&content, CHUNK_SIZE, CHUNK_OVERLAP);
     tracing::info!("Created {} chunks for {}", chunks.len(), path.display());
 
-    for (i, c) in chunks.iter().enumerate() {
-        let embedding = embed::embed_text(embedding_model, &c.content).await?;
-        db::insert_chunk(conn, doc_id, i, &c.content, &embedding).await?;
-        if i % 10 == 0 {
-            tracing::info!("Embedded chunk {}/{}", i + 1, chunks.len());
+    // Embed in batches, pipeline DB inserts with next batch's embedding
+    let tx = conn.transaction().await?;
+    let mut pending_insert: Option<tokio::task::JoinHandle<anyhow::Result<()>>> = None;
+
+    for (batch_idx, batch) in chunks.chunks(EMBED_BATCH_SIZE).enumerate() {
+        let texts: Vec<String> = batch.iter().map(|c| c.content.clone()).collect();
+        let embeddings = embed::embed_texts(embedding_model, texts).await?;
+
+        // Wait for previous batch's DB insert before starting a new one
+        if let Some(handle) = pending_insert.take() {
+            handle.await??;
         }
+
+        // Spawn DB inserts for this batch while the next batch embeds
+        let tx_clone = tx.clone();
+        let batch_data: Vec<(usize, String, Vec<f32>)> = batch
+            .iter()
+            .zip(embeddings)
+            .enumerate()
+            .map(|(j, (c, emb))| (batch_idx * EMBED_BATCH_SIZE + j, c.content.clone(), emb))
+            .collect();
+        let total = chunks.len();
+
+        pending_insert = Some(tokio::spawn(async move {
+            for (chunk_idx, content, embedding) in &batch_data {
+                db::insert_chunk(&tx_clone, doc_id, *chunk_idx, content, embedding).await?;
+            }
+            let progress = (batch_idx + 1) * EMBED_BATCH_SIZE;
+            tracing::info!("Embedded {}/{} chunks", progress.min(total), total);
+            Ok(())
+        }));
     }
+
+    // Wait for final batch insert
+    if let Some(handle) = pending_insert.take() {
+        handle.await??;
+    }
+    tx.commit().await?;
 
     tracing::info!("Done ingesting {}", path.display());
     Ok(())

@@ -12,8 +12,19 @@ pub fn embedding_model(client: &ollama::Client) -> ollama::EmbeddingModel {
 
 pub async fn embed_text(model: &ollama::EmbeddingModel, text: &str) -> anyhow::Result<Vec<f32>> {
     let embedding = model.embed_text(text).await?;
-    // rig returns Vec<f64>, libsql F32_BLOB needs f32
-    #[allow(clippy::cast_possible_truncation)]
-    let vec_f32 = embedding.vec.iter().map(|&v| v as f32).collect();
-    Ok(vec_f32)
+    Ok(to_f32(&embedding.vec))
+}
+
+pub async fn embed_texts(
+    model: &ollama::EmbeddingModel,
+    texts: impl IntoIterator<Item = String> + Send,
+) -> anyhow::Result<Vec<Vec<f32>>> {
+    let embeddings = model.embed_texts(texts).await?;
+    Ok(embeddings.iter().map(|e| to_f32(&e.vec)).collect())
+}
+
+// rig returns Vec<f64>, libsql F32_BLOB needs f32
+#[allow(clippy::cast_possible_truncation)]
+fn to_f32(vec: &[f64]) -> Vec<f32> {
+    vec.iter().map(|&v| v as f32).collect()
 }
