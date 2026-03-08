@@ -1,0 +1,98 @@
+{% import "macros.html" as macros %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {% if page %}
+      {% if page.description %}
+    <meta name="description" content="{{ page.description }}" />
+      {% elif config.description %}
+    <meta name="description" content="{{ config.description }}" />
+      {% endif %}
+    {% elif config.description %}
+    <meta name="description" content="{{ config.description }}" />
+    {% endif %}
+
+    <title>{% block title %}{{ config.title }}{% endblock title %}</title>
+
+    {% if config.generate_feeds %}
+      {% for feed in config.feed_filenames %}
+    <link rel="alternate" type={% if feed == "atom.xml" %}"application/atom+xml"{% else %}"application/rss+xml"{% endif %} title="RSS" href="{{ get_url(path=feed) | safe }}">
+      {% endfor %}
+    {% endif %}
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300..700;1,300..700&display=swap">
+    <link rel="stylesheet" href="{{ get_url(path="site.css", trailing_slash=false) }}">
+
+    {% block extra_head %}
+    {% endblock extra_head %}
+  </head>
+
+  <body class="{% block body_class %}{% endblock body_class %}">
+    <div class="container">
+
+      {% block outer_header %}
+      <div id="mobile-navbar" class="mobile-navbar">
+        <div class="mobile-header-logo">
+          <a href="{{ config.base_url }}" class="logo">{{ config.extra.crab_island_title }}</a>
+        </div>
+        <div class="mobile-navbar-icon icon-out" id="mobile-navbar-icon">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <nav id="mobile-menu" class="mobile-menu">
+        <ul class="mobile-menu-list">
+          {% for item in config.extra.crab_island_menu %}
+          <li class="mobile-menu-item">
+            <a href="{{ item.url | replace(from="$BASE_URL", to=config.base_url) }}">
+              {{ item.name }}
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </nav>
+
+      <header id="header">
+        <div class="header-brand">
+          <div class="header-brand__title"><a href="{{ config.base_url }}">{{ config.extra.crab_island_title }}</a></div>
+          <div class="header-brand__subtitle">{{ config.extra.crab_island_subtitle }}</div>
+        </div>
+        <nav class="menu">
+          <ul>
+            {% for item in config.extra.crab_island_menu %}
+            <li>
+              <a href="{{ item.url | replace(from="$BASE_URL", to=config.base_url) }}" title="{{ item.name }}">
+                {{ macros::icon(name=item.icon) }}
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+        </nav>
+      </header>
+      {% endblock outer_header %}
+
+      <main>
+        <div class="content" id="mobile-panel">
+          {% block content %}{% endblock content %}
+        </div>
+      </main>
+
+      {% block outer_footer %}
+      <footer class="island-footer">
+        <div>Built with <a href="https://www.getzola.org">Zola</a></div>
+      </footer>
+      {% endblock outer_footer %}
+    </div>
+
+    <script src="{{ get_url(path="crab-island.js", trailing_slash=false) }}"></script>
+  </body>
+</html>

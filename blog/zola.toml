@@ -1,0 +1,32 @@
+base_url = "https://ilaborie.github.io/mini-rag"
+title = "Building a RAG System in Rust"
+description = "The Crab Island RAG Expedition — Building a RAG system in Rust"
+compile_sass = true
+build_search_index = false
+generate_feeds = true
+theme = "crab-island"
+
+[[taxonomies]]
+name = "tags"
+feed = true
+
+[[taxonomies]]
+name = "categories"
+feed = true
+
+[markdown]
+bottom_footnotes = true
+insert_anchor_links = "heading"
+
+[markdown.highlighting]
+style = "class"
+light_theme = "github-light"
+dark_theme = "github-dark"
+
+[extra]
+crab_island_title = "Crab Island RAG Expedition"
+crab_island_subtitle = "RAG in Rust"
+crab_island_menu = [
+    {url = "$BASE_URL", name = "Home", icon = "home"},
+    {url = "https://github.com/ilaborie/mini-rag", name = "GitHub", icon = "github"},
+]

@@ -1,0 +1,342 @@
+@use "variables" as v;
+@use "animations";
+
+main {
+  clear: both;
+
+  .content {
+    padding: 0 20px;
+  }
+
+  .posts {
+    margin-bottom: 20px;
+  }
+
+  .post-entry {
+    padding: 0.8rem 0;
+
+    &__title {
+      margin: 0;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--heading);
+
+      &:hover {
+        color: var(--accent);
+      }
+    }
+
+    a {
+      color: inherit;
+    }
+
+    &__summary {
+      margin: 0.3rem 0 0;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+  }
+
+  .post {
+    flex: 1;
+    min-width: 0; // prevent flex overflow
+    padding: 1.5rem 0;
+
+    .post__title {
+      a {
+        color: var(--heading);
+
+        &:hover {
+          color: var(--accent);
+        }
+      }
+    }
+
+    h2, h3, h4, h5, h6 {
+      color: var(--heading);
+      font-weight: 600;
+      margin-top: 1.5em;
+      position: relative;
+
+      .zola-anchor {
+        color: inherit;
+
+        &::before {
+          content: "#";
+          position: absolute;
+          left: -1.5ch;
+          color: var(--overlay0);
+          opacity: 0;
+          transition: opacity 0.2s ease;
+        }
+      }
+
+      &:hover .zola-anchor::before {
+        opacity: 1;
+      }
+    }
+
+    h2 { font-size: 1.5rem; }
+    h3 { font-size: 1.3rem; }
+    h4 { font-size: 1.1rem; }
+
+    p > a {
+      color: var(--link);
+
+      &:hover {
+        color: var(--link-hover);
+        border-bottom: 1px solid var(--link-hover);
+      }
+    }
+
+    blockquote {
+      margin: 2em 0;
+      padding: 10px 20px;
+      position: relative;
+      color: var(--subtext1);
+      background-color: color-mix(in srgb, var(--surface0) 50%, transparent);
+      border-left: 3px solid var(--blockquote-border);
+      border-radius: 0 6px 6px 0;
+
+      &::before {
+        content: "\1F99C "; // parrot
+        position: absolute;
+        left: -1.5em;
+        top: 10px;
+      }
+
+      p {
+        margin: 0;
+      }
+    }
+
+    table {
+      width: 100%;
+      max-width: 100%;
+      margin: 10px 0;
+      border-spacing: 0;
+      border: 1px solid var(--surface1);
+      border-radius: 6px;
+      overflow: hidden;
+
+      thead {
+        background: var(--surface0);
+      }
+
+      th, td {
+        padding: 8px 15px;
+        border: 1px solid var(--surface1);
+      }
+
+      tr:hover {
+        background-color: color-mix(in srgb, var(--surface0) 50%, transparent);
+      }
+    }
+
+    .footnote-definition {
+      padding-left: 40px;
+
+      &:first-of-type {
+        border-top: 2px dashed var(--surface2);
+        margin-top: 1rem;
+        padding-top: 1rem;
+      }
+
+      sup.footnote-definition-label {
+        font-size: 100%;
+        position: unset;
+        top: unset;
+
+        &::after {
+          content: '.';
+        }
+      }
+
+      p {
+        display: inline;
+      }
+    }
+
+    &__title {
+      margin: 0;
+      font-size: 1.6rem;
+      font-weight: 700;
+
+      @include animations.underline-from-center;
+    }
+
+    &__meta {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    &__summary {
+      margin-bottom: 1rem;
+    }
+  }
+
+  .post-footer {
+    margin-top: 20px;
+    border-top: 1px solid var(--border);
+
+    &::after {
+      clear: both;
+      height: 0;
+      width: 100%;
+      content: '';
+      display: block;
+    }
+  }
+
+  .post-tags {
+    padding: 15px 0;
+
+    a {
+      display: inline-block;
+      margin-right: 8px;
+      margin-bottom: 5px;
+      padding: 2px 10px;
+      background: color-mix(in srgb, var(--teal) 10%, transparent);
+      color: var(--tag-color);
+      border: 1px solid color-mix(in srgb, var(--teal) 30%, transparent);
+      border-radius: 12px;
+      font-size: 0.85rem;
+
+      &:hover {
+        background: color-mix(in srgb, var(--teal) 20%, transparent);
+        color: var(--teal);
+      }
+    }
+  }
+
+  .post-nav {
+    margin: 1rem 0;
+  }
+
+  .post + .post {
+    border-top: none;
+  }
+
+  .pagination {
+    clear: both;
+    margin: 2rem 0;
+    font-size: 1rem;
+
+    a {
+      color: var(--text-secondary);
+
+      &:hover {
+        color: var(--accent);
+      }
+    }
+  }
+}
+
+.next, .previous {
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: transform 0.3s ease-out;
+
+  &:hover {
+    color: var(--accent);
+  }
+}
+
+.next {
+  float: right;
+
+  &::after {
+    content: " \27A1\FE0F"; // right arrow
+  }
+
+  &:hover {
+    transform: translateX(4px);
+  }
+}
+
+.previous {
+  float: left;
+
+  &::before {
+    content: "\2B05\FE0F "; // left arrow
+  }
+
+  &:hover {
+    transform: translateX(-4px);
+  }
+}
+
+.taxonomies {
+  margin: 2em 0 3em;
+  text-align: center;
+
+  &__title {
+    display: inline-block;
+    font-size: 1.1rem;
+    color: var(--accent);
+    border-bottom: 2px solid var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  &__items {
+    margin: 10px 0;
+
+    a {
+      display: inline-block;
+      margin: 5px 8px;
+      padding: 4px 14px;
+      background: color-mix(in srgb, var(--teal) 10%, transparent);
+      color: var(--tag-color);
+      border: 1px solid color-mix(in srgb, var(--teal) 30%, transparent);
+      border-radius: 16px;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: color-mix(in srgb, var(--teal) 20%, transparent);
+        color: var(--teal);
+        transform: translateY(-1px);
+      }
+
+      .count {
+        position: relative;
+        top: -6px;
+        right: -2px;
+        color: var(--text-secondary);
+        font-size: 0.75rem;
+      }
+    }
+  }
+}
+
+.taxonomy {
+  margin: 2em 0;
+
+  h2 {
+    color: var(--heading);
+  }
+
+  &__item {
+    padding: 6px 20px;
+    border-left: 2px solid var(--surface2);
+    transition: 0.2s ease-out;
+
+    &:hover {
+      border-left: 3px solid var(--accent);
+      transform: translateX(4px);
+    }
+
+    &__time {
+      margin-right: 10px;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    &__title a {
+      color: var(--link);
+
+      &:hover {
+        color: var(--link-hover);
+      }
+    }
+  }
+}

@@ -2,6 +2,8 @@
 
 A minimal RAG (Retrieval-Augmented Generation) system in Rust. Built with rig-core, libsql, and kreuzberg.
 
+Read the full blog series: [The Crab Island RAG Expedition](https://ilaborie.github.io/mini-rag/)
+
 ## Prerequisites
 
 - Rust 1.91.1+ (edition 2024)

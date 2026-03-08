@@ -1,0 +1,61 @@
+@use "variables" as v;
+@use "animations";
+
+#header {
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .header-brand {
+    &__title a {
+      color: var(--accent);
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    &__subtitle {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      margin-top: 0.1rem;
+    }
+  }
+
+  .menu {
+    ul {
+      display: inline-flex;
+      gap: 0.8rem;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+
+      li a {
+        display: block;
+        padding: 4px;
+        color: var(--subtext1);
+        transition: color 0.2s ease, transform 0.2s ease;
+
+        .icon {
+          width: 1.4rem;
+          height: 1.4rem;
+          vertical-align: middle;
+        }
+
+        &:hover {
+          color: var(--text);
+          transform: scale(1.15);
+        }
+      }
+    }
+  }
+}
+
+@include v.max-screen() {
+  #header {
+    .header-brand, .menu {
+      display: none;
+    }
+    padding: 50px 0 0;
+  }
+}

@@ -1,0 +1,78 @@
+@use "variables" as v;
+@use "animations";
+
+.mobile-navbar {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: v.$mobile-navbar-height;
+  background: var(--mantle);
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+  z-index: 99;
+
+  .mobile-header-logo {
+    display: inline-block;
+
+    .logo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      line-height: v.$mobile-navbar-height;
+      color: var(--accent);
+    }
+  }
+
+  .mobile-navbar-icon {
+    cursor: pointer;
+    height: v.$mobile-navbar-height;
+    width: v.$mobile-navbar-height;
+    float: left;
+    position: relative;
+    transition: background 0.5s;
+
+    @include animations.mobile-menu-icon();
+  }
+}
+
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: v.$mobile-navbar-height;
+  left: 0;
+  width: 100%;
+  background: var(--mantle);
+  border-bottom: 1px solid var(--border);
+  z-index: 98;
+
+  &.is-open {
+    display: block;
+  }
+
+  .mobile-menu-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    .mobile-menu-item {
+      padding: 12px 30px;
+      border-bottom: 1px solid var(--border);
+
+      a {
+        color: var(--subtext1);
+        font-size: 1rem;
+
+        &:hover {
+          color: var(--accent);
+        }
+      }
+    }
+  }
+}
+
+@include v.max-screen() {
+  .mobile-navbar {
+    display: block;
+  }
+}
