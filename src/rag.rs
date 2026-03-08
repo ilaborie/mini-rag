@@ -1,4 +1,4 @@
-use std::fmt;
+use std::fmt::{self, Write as _};
 
 use libsql::Connection;
 use owo_colors::OwoColorize;
@@ -46,12 +46,11 @@ pub fn strip_think_tags(text: &str) -> String {
     let mut result = String::new();
     let mut remaining = text;
 
-    while let Some(start) = remaining.find("<think>") {
-        result.push_str(&remaining[..start]);
-        if let Some(end) = remaining[start..].find("</think>") {
-            remaining = &remaining[start + end + "</think>".len()..];
-        } else {
-            return result.trim().to_owned();
+    while let Some((before, after_open)) = remaining.split_once("<think>") {
+        result.push_str(before);
+        match after_open.split_once("</think>") {
+            Some((_, after_close)) => remaining = after_close,
+            None => return result.trim().to_owned(),
         }
     }
     result.push_str(remaining);
@@ -71,31 +70,32 @@ pub async fn query(
     let query_embedding = embed::embed_text(embedding_model, question).await?;
     let hits = db::vector_search(conn, &query_embedding, TOP_K).await?;
 
-    // 2. Build context from search results
-    let context: String = hits
-        .iter()
-        .enumerate()
-        .map(|(i, hit)| format!("[{}] {}", i + 1, hit.content))
-        .collect::<Vec<_>>()
-        .join("\n\n");
-
-    // 3. Collect sources
-    let sources: Vec<Source> = hits
-        .iter()
-        .map(|hit| Source {
-            title: hit.doc_title.clone(),
-            path: hit.doc_path.clone(),
+    // 2. Build context and collect sources in one pass
+    let mut context = String::new();
+    let mut sources = Vec::with_capacity(hits.len());
+    for (i, hit) in hits.into_iter().enumerate() {
+        if !context.is_empty() {
+            context.push_str("\n\n");
+        }
+        let _ = write!(context, "[{}] {}", i + 1, &hit.content);
+        sources.push(Source {
             excerpt: truncate_to_excerpt(&hit.content, EXCERPT_LEN),
-        })
-        .collect();
+            title: hit.doc_title,
+            path: hit.doc_path,
+        });
+    }
 
     // 4. Query LLM with explicit context
     let agent = client
         .agent(DEEPSEEK_R1)
         .preamble(
-            "You are a helpful assistant. Answer the user's question based on the provided context. \
-             If the context doesn't contain enough information, say so. \
-             Be concise and direct.",
+            "You are Kwaak 🦜, the wise parrot of Crab Island. \
+             You speak with parrot flair — sprinkle in the occasional *squawk!*, \
+             *BRAWWK!*, or *ruffles feathers*, and use emojis like 🦀🥥🏝️. \
+             But under the plumage, you are precise and knowledgeable. \
+             Use the provided context to answer accurately. \
+             If the context doesn't contain enough information, squawk honestly — \
+             never make up answers. Keep answers concise.",
         )
         .build();
 

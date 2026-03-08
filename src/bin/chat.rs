@@ -5,15 +5,10 @@ use std::path::Path;
 use std::sync::mpsc;
 use std::time::Duration;
 
-use owo_colors::OwoColorize;
-use tracing_subscriber::EnvFilter;
-
 use mini_rag::{DB_PATH, db, embed, rag};
+use owo_colors::OwoColorize;
 
-const SPINNER_FRAMES: &[char] = &[
-    '\u{280B}', '\u{2819}', '\u{2839}', '\u{2838}', '\u{283C}', '\u{2834}', '\u{2826}', '\u{2827}',
-    '\u{2807}', '\u{280F}',
-];
+const SPINNER_FRAMES: &[char] = &['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
 
 fn start_spinner(message: &str) -> mpsc::Sender<()> {
     let (tx, rx) = mpsc::channel();
@@ -40,11 +35,7 @@ fn start_spinner(message: &str) -> mpsc::Sender<()> {
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    tracing_subscriber::fmt()
-        .with_env_filter(
-            EnvFilter::from_default_env().add_directive("warn".parse().expect("valid directive")),
-        )
-        .init();
+    tracing_subscriber::fmt::init();
 
     let conn = db::init_db(Path::new(DB_PATH)).await?;
     let client = mini_rag::ollama_client()?;
@@ -74,7 +65,7 @@ async fn main() -> anyhow::Result<()> {
         }
 
         let question = line.trim();
-        if question.is_empty() || question == "exit" || question == "quit" {
+        if matches!(question, "" | "exit" | "quit") {
             break;
         }
 

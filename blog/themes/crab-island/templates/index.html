@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block body_class %}landing-page{% endblock body_class %}
+
+{% block outer_header %}{% endblock outer_header %}
+{% block outer_footer %}{% endblock outer_footer %}
+
+{% block content %}
+  <div class="landing">
+    <div class="landing__illustration">
+      <img src="{{ get_url(path="img/landing.jpg", trailing_slash=false) }}" alt="Crab Island — RAG in Rust" />
+      <div class="photo-credit">Photo by <a href="https://unsplash.com/@parisbilal">Paris Bilal</a> on <a href="https://unsplash.com">Unsplash</a></div>
+    </div>
+    <div class="landing__panel">
+      <header id="header">
+        <div class="header-brand">
+          <div class="header-brand__title"><a href="{{ config.base_url }}">{{ config.extra.crab_island_title }}</a></div>
+          <div class="header-brand__subtitle">{{ config.extra.crab_island_subtitle }}</div>
+        </div>
+        <nav class="menu">
+          <ul>
+            {% for item in config.extra.crab_island_menu %}
+            <li>
+              <a href="{{ item.url | replace(from='$BASE_URL', to=config.base_url) }}" title="{{ item.name }}">
+                {{ macros::icon(name=item.icon) }}
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+        </nav>
+      </header>
+
+      <div class="landing__content">
+        <h1 class="landing__title">{{ config.title }}</h1>
+        <nav class="landing__parts">
+          {% for page in paginator.pages %}
+            <a href="{{ page.permalink }}" class="landing__part">
+              <span class="landing__part-title">{{ page.title }}</span>
+              {% if page.description %}
+              <span class="landing__part-summary">{{ page.description }}</span>
+              {% endif %}
+            </a>
+          {% endfor %}
+        </nav>
+      </div>
+
+      <footer class="island-footer">
+        <div>Built with <a href="https://www.getzola.org">Zola</a></div>
+      </footer>
+    </div>
+  </div>
+{% endblock content %}
