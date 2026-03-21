@@ -5,6 +5,28 @@
 
 {% block title %}{{ config.title }} - {{ page.title }}{% endblock title %}
 
+{% block header_nav_extra %}
+  {% if page.higher %}
+  <li class="nav-arrow-item">
+    <a href="{{ page.higher.permalink }}" class="nav-arrow prev" title="{{ page.higher.title }}" aria-label="Previous: {{ page.higher.title }}">
+      {{ macros::icon(name="arrow-left") }}
+    </a>
+  </li>
+  {% else %}
+  <li class="nav-arrow-item"><span class="nav-arrow disabled">{{ macros::icon(name="arrow-left") }}</span></li>
+  {% endif %}
+  {% if page.lower %}
+  <li class="nav-arrow-item">
+    <a href="{{ page.lower.permalink }}" class="nav-arrow next" title="{{ page.lower.title }}" aria-label="Next: {{ page.lower.title }}">
+      {{ macros::icon(name="arrow-right") }}
+    </a>
+  </li>
+  {% else %}
+  <li class="nav-arrow-item"><span class="nav-arrow disabled">{{ macros::icon(name="arrow-right") }}</span></li>
+  {% endif %}
+  <li class="nav-separator" aria-hidden="true">|</li>
+{% endblock header_nav_extra %}
+
 {% block content %}
 
 {% if page.extra.illustration %}

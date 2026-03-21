@@ -85,7 +85,7 @@ kreuzberg error: pdfium library not found
 mkdir -p ~/lib && cp libpdfium.dylib ~/lib/
 ```
 
-> **Expedition tip**: The kreuzberg crate has a `pdf` feature that must be explicitly enabled — the default features don't include PDF support! Make sure your manifest says `kreuzberg = { version = "4.4.4", features = ["pdf"] }`. There's also a `bundled-pdfium` feature, but despite its promising name, it doesn't actually bundle pdfium. It just enables the `pdf` feature. We all ran aground on that reef at least once.
+> **Expedition tip**: The kreuzberg crate has a `pdf` feature that must be explicitly enabled — the default features don't include PDF support! Make sure your manifest says `kreuzberg = { version = "4.5.1", features = ["pdf"] }`. There's also a `bundled-pdfium` feature, but despite its promising name, it doesn't actually bundle pdfium. It just enables the `pdf` feature. We all ran aground on that reef at least once.
 
 ## Why Plain Text?
 

@@ -47,6 +47,46 @@
           transform: scale(1.15);
         }
       }
+
+      li.nav-separator {
+        color: var(--subtext1);
+        opacity: 0.3;
+        user-select: none;
+      }
+
+      .theme-toggle {
+        background: none;
+        border: none;
+        padding: 4px;
+        cursor: pointer;
+        color: var(--subtext1);
+        transition: color 0.2s ease, transform 0.2s ease;
+
+        .icon {
+          width: 1.4rem;
+          height: 1.4rem;
+          vertical-align: middle;
+        }
+
+        &:hover {
+          color: var(--text);
+          transform: scale(1.15);
+        }
+      }
+
+      li .nav-arrow.disabled {
+        display: block;
+        padding: 4px;
+        color: var(--subtext1);
+        opacity: 0.25;
+        cursor: default;
+
+        .icon {
+          width: 1.4rem;
+          height: 1.4rem;
+          vertical-align: middle;
+        }
+      }
     }
   }
 }

@@ -232,7 +232,7 @@ main {
   }
 }
 
-.next, .previous {
+.post-nav .next, .post-nav .previous {
   font-weight: 600;
   font-size: 1.1rem;
   transition: transform 0.3s ease-out;
@@ -242,7 +242,7 @@ main {
   }
 }
 
-.next {
+.post-nav .next {
   float: right;
 
   &::after {
@@ -254,7 +254,7 @@ main {
   }
 }
 
-.previous {
+.post-nav .previous {
   float: left;
 
   &::before {

@@ -67,6 +67,26 @@
           color: var(--accent);
         }
       }
+
+      .theme-toggle {
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        color: var(--subtext1);
+        font-size: 1rem;
+
+        .icon {
+          width: 1.2rem;
+          height: 1.2rem;
+          vertical-align: middle;
+          margin-right: 0.3rem;
+        }
+
+        &:hover {
+          color: var(--accent);
+        }
+      }
     }
   }
 }
