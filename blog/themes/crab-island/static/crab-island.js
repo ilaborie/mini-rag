@@ -50,13 +50,64 @@ function initToc() {
   });
 }
 
+function initThemeToggle() {
+  var buttons = document.querySelectorAll("#theme-toggle, #mobile-theme-toggle");
+  if (!buttons.length) return;
+
+  function currentTheme() {
+    return document.documentElement.getAttribute("data-theme") ||
+      (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+  }
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+    // In dark mode show sun (to switch to light), in light mode show moon (to switch to dark)
+    document.querySelectorAll(".theme-icon-light").forEach(function (el) {
+      el.style.display = theme === "dark" ? "inline" : "none";
+    });
+    document.querySelectorAll(".theme-icon-dark").forEach(function (el) {
+      el.style.display = theme === "dark" ? "none" : "inline";
+    });
+  }
+
+  // Apply initial state
+  applyTheme(currentTheme());
+
+  buttons.forEach(function (btn) {
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      applyTheme(currentTheme() === "dark" ? "light" : "dark");
+    });
+  });
+}
+
+function initKeyboardNav() {
+  document.addEventListener("keydown", function (e) {
+    if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" ||
+        e.target.tagName === "SELECT" || e.target.isContentEditable) return;
+    var link;
+    if (e.key === "ArrowLeft") {
+      link = document.querySelector("a.nav-arrow.prev");
+    } else if (e.key === "ArrowRight") {
+      link = document.querySelector("a.nav-arrow.next");
+    }
+    if (link) link.click();
+  });
+}
+
 if (document.readyState === "complete" ||
     (document.readyState !== "loading" && !document.documentElement.doScroll)) {
   initMobile();
   initToc();
+  initKeyboardNav();
+  initThemeToggle();
 } else {
   document.addEventListener("DOMContentLoaded", function () {
     initMobile();
     initToc();
+    initKeyboardNav();
+    initThemeToggle();
   });
 }

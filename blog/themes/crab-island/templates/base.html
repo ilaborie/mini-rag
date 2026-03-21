@@ -25,11 +25,10 @@
       {% endfor %}
     {% endif %}
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300..700;1,300..700&display=swap">
+    <link rel="icon" href="{{ get_url(path="favicon.svg", trailing_slash=false) }}" type="image/svg+xml">
     <link rel="stylesheet" href="{{ get_url(path="site.css", trailing_slash=false) }}">
 
+    <script>var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);</script>
     {% block extra_head %}
     {% endblock extra_head %}
   </head>
@@ -58,6 +57,12 @@
             </a>
           </li>
           {% endfor %}
+          <li class="mobile-menu-item">
+            <button id="mobile-theme-toggle" class="theme-toggle" title="Toggle light/dark theme" aria-label="Toggle theme">
+              <span class="theme-icon-light" style="display:none">{{ macros::icon(name="sun") }} Light</span>
+              <span class="theme-icon-dark" style="display:none">{{ macros::icon(name="moon") }} Dark</span>
+            </button>
+          </li>
         </ul>
       </nav>
 
@@ -68,13 +73,32 @@
         </div>
         <nav class="menu">
           <ul>
-            {% for item in config.extra.crab_island_menu %}
+            {% set menu = config.extra.crab_island_menu %}
+            {% if menu | length > 0 %}
+            <li>
+              <a href="{{ menu[0].url | replace(from="$BASE_URL", to=config.base_url) }}" title="{{ menu[0].name }}">
+                {{ macros::icon(name=menu[0].icon) }}
+              </a>
+            </li>
+            {% endif %}
+            {% block header_nav_extra %}{% endblock header_nav_extra %}
+            <li>
+              <button id="theme-toggle" class="theme-toggle" title="Toggle light/dark theme" aria-label="Toggle theme">
+                <span class="theme-icon-light" style="display:none">{{ macros::icon(name="sun") }}</span>
+                <span class="theme-icon-dark" style="display:none">{{ macros::icon(name="moon") }}</span>
+              </button>
+            </li>
+            {% if menu | length > 1 %}
+            {% for item in menu %}
+            {% if not loop.first %}
             <li>
               <a href="{{ item.url | replace(from="$BASE_URL", to=config.base_url) }}" title="{{ item.name }}">
                 {{ macros::icon(name=item.icon) }}
               </a>
             </li>
+            {% endif %}
             {% endfor %}
+            {% endif %}
           </ul>
         </nav>
       </header>
