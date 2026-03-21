@@ -99,14 +99,15 @@ path = "src/bin/chat.rs"
 
 [dependencies]
 anyhow = "1"
-kreuzberg = { version = "4.4.4", features = ["pdf"] }
-libsql = "0.9.29"
+kreuzberg = { version = "4.5.1", features = ["pdf"] }
+kreuzberg-pdfium-render = "4.5.1" # pin to match kreuzberg 4.5.x (upstream version mismatch)
+libsql = "0.9.30"
 owo-colors = "4"
-rig-core = "0.32.0"
+rig-core = "0.33.0"
 serde_json = "1.0.149"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 tracing = "0.1.44"
-tracing-subscriber = "0.3.22"
+tracing-subscriber = "0.3.23"
 ```
 
 > **Note**: This project requires Rust 1.91.1+ (due to dependencies MSRV). Check with `rustc --version`.
